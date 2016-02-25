@@ -24,7 +24,7 @@
                 path = window.location.hash.length > 0 && window.location.hash[0] === '#' ? window.location.hash.substring(1) : window.location.hash;
             }
             else {
-                //window.location.href = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=mndzi8dvtaknz32t2op18x0fcq71lm&redirect_uri=" + encodeURIComponent("https://ohbot.3v.fi/panel/") + "&scope=&state=" + encodeURIComponent(path);
+                window.location.href = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=mndzi8dvtaknz32t2op18x0fcq71lm&redirect_uri=" + encodeURIComponent("https://ohbot.3v.fi/panel/") + "&scope=&state=" + encodeURIComponent(path);
             }
         }
         
@@ -53,6 +53,9 @@
     
     function startApp(apiToken) {
         authHeader = apiToken;
+        if (hasStorageSupport) {
+            localStorage.setItem('apitoken', apiToken);
+        }
         apiRequest('me', null, function () {
             try {
                 var channelData = JSON.parse(this.responseText);
@@ -64,6 +67,9 @@
             initializeChannel(channelData);
         }, function (e) {
             console.log(this, e);
+            if (hasStorageSupport) {
+                localStorage.removeItem('apitoken');
+            }
         });
     }
     
