@@ -12,7 +12,7 @@
         catch (e) { }
 
         var apiToken;
-    
+
         // Get credentials
         if (!hasStorageSupport || null === (apiToken = localStorage.getItem('apitoken'))) {
             var qs = parseQueryString(path);
@@ -59,6 +59,8 @@
                 return;
             }
             initializeChannel(channelData);
+        }, function (e) {
+            console.log(this, e);
         });
     }
     
@@ -71,11 +73,10 @@
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', callback);
         if (typeof error === "function") xhr.addEventListener('error', error);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Connection', 'close');
 
         if (data) {
             xhr.open("POST", url, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify(data));
         }
         else {
