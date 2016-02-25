@@ -1,5 +1,5 @@
 (function () {
-    var path = window.location.hash;
+    var path = window.location.hash.length > 0 && window.location.hash[0] === '#' ? window.location.hash.substring(1) : window.location.hash;
     var hasStorageSupport = false;
     var authHeader = "";
     
@@ -21,7 +21,7 @@
             if ('access_token' in qs) {
                 authHeader = "OAuth " + qs['access_token'];
                 window.location.hash = 'state' in qs ? qs['state'] : '';
-                path = window.location.hash;
+                path = window.location.hash.length > 0 && window.location.hash[0] === '#' ? window.location.hash.substring(1) : window.location.hash;
             }
             else {
                 //window.location.href = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=mndzi8dvtaknz32t2op18x0fcq71lm&redirect_uri=" + encodeURIComponent("https://ohbot.3v.fi/panel/") + "&scope=&state=" + encodeURIComponent(path);
