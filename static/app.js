@@ -17,14 +17,14 @@
         // Get credentials
         if (!hasStorageSupport || null === (apiToken = localStorage.getItem('apitoken'))) {
             var qs = parseQueryString(path);
+            console.log(qs);
             if ('access_token' in qs) {
                 authHeader = "OAuth " + qs['access_token'];
                 window.location.hash = 'state' in qs ? qs['state'] : '';
                 path = window.location.hash;
             }
             else {
-                window.location.href = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=mndzi8dvtaknz32t2op18x0fcq71lm&redirect_uri=" +
-                encodeURIComponent("https://ohbot.3v.fi/panel/") + "&scope=&state=" + encodeURIComponent(path);
+                //window.location.href = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=mndzi8dvtaknz32t2op18x0fcq71lm&redirect_uri=" + encodeURIComponent("https://ohbot.3v.fi/panel/") + "&scope=&state=" + encodeURIComponent(path);
             }
         }
         
