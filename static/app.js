@@ -93,7 +93,7 @@
     function parseQueryString(qs) {
         var parts = qs.split('&');
         var values = {};
-        for (var i = 0; i < parts[i]; ++i) {
+        for (var i = 0; i < parts.length; ++i) {
             var keyval = parts[i].split('=');
             if (keyval.length > 1) {
                 values[decodeURIComponent(keyval[0])] = decodeURIComponent(keyval[1]);
