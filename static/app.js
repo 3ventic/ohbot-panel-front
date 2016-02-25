@@ -1,6 +1,7 @@
 (function () {
     var path = window.location.hash;
     var hasStorageSupport = false;
+    var authHeader = "";
     
     window.onload = function () {
         // Check localStorage support
@@ -17,6 +18,7 @@
         if (!hasStorageSupport || null === (apiToken = localStorage.getItem('apitoken'))) {
             var qs = parseQueryString(path);
             if ('access_token' in qs) {
+                authHeader = "OAuth " + qs['access_token'];
                 window.location.hash = 'state' in qs ? qs['state'] : '';
                 path = window.location.hash;
             }
@@ -50,6 +52,7 @@
     }
     
     function startApp(apiToken) {
+        authHeader = apiToken;
         apiRequest('me', null, function () {
             try {
                 var channelData = JSON.parse(this.responseText);
@@ -77,10 +80,12 @@
         if (data) {
             xhr.open("POST", url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Authorization', authHeader);
             xhr.send(JSON.stringify(data));
         }
         else {
             xhr.open("GET", url, true);
+            xhr.setRequestHeader('Authorization', authHeader);
             xhr.send();
         }
     }
