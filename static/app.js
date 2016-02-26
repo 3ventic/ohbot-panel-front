@@ -105,13 +105,13 @@
         if (channelData.joined) {
             var ul = document.createElement('ul');
             sect.appendChild(ul);
-            for (var key in channelData) {
-                if (channelData.hasOwnProperty(key)) {
-                    switch (typeof channelData[key]) {
+            for (var key in channelData.channel) {
+                if (channelData.channel.hasOwnProperty(key)) {
+                    switch (typeof channelData.channel[key]) {
                         case "number":
-                            channelData[key] = channelData[key].toString();
+                            channelData.channel[key] = channelData.channel[key].toString();
                         case "string":
-                            ul.appendChild(createKeyValListEntry(key, channelData[key]));
+                            ul.appendChild(createKeyValListEntry(key, channelData.channel[key]));
                             break;
                     }
                 }
