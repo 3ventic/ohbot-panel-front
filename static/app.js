@@ -23,6 +23,10 @@
                 window.location.hash = 'state' in qs ? qs['state'] : '';
                 path = window.location.hash.length > 0 && window.location.hash[0] === '#' ? window.location.hash.substring(1) : window.location.hash;
             }
+            else if (window.location.search.length > 0) {
+                alert('You need to login via Twitch in order to use this panel.');
+                window.location.href = "https://ohbot.3v.fi/";
+            }
             else {
                 window.location.href = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=mndzi8dvtaknz32t2op18x0fcq71lm&redirect_uri=" + encodeURIComponent("https://ohbot.3v.fi/panel/") + "&scope=&state=" + encodeURIComponent(path);
             }
@@ -32,26 +36,25 @@
         }
         
         if (username && apiToken) {
-            startApp(username, apiToken);
+            authHeader = apiToken;
         }
-        else {
-            apiRequest('token', null, function () {
-                try {
-                    var json = JSON.parse(this.responseText);
-                }
-                catch (e) {
-                    console.error(e);
-                    return;
-                }
+        
+        apiRequest('token', null, function () {
+            try {
+                var json = JSON.parse(this.responseText);
+            }
+            catch (e) {
+                console.error(e);
+                return;
+            }
 
-                if (json.status === 200) {
-                    startApp(json.auth.username, json.auth.token);
-                }
-                else {
-                    console.error("Token status " + json.status);
-                }
-            });
-        }
+            if (json.status === 200) {
+                startApp(json.auth.username, json.auth.token);
+            }
+            else {
+                console.error("Token status " + json.status);
+            }
+        });
     }
     
     function addToNav(href, text) {
