@@ -49,7 +49,7 @@
             }
 
             if (json.status === 200) {
-                startApp(json.auth.username, json.auth.token);
+                startApp(json.authorization.username, json.authorization.token);
             }
             else if (json.status === 205) {
                 if (hasStorageSupport) {
