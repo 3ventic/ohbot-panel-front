@@ -27,9 +27,12 @@
                 window.location.href = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=mndzi8dvtaknz32t2op18x0fcq71lm&redirect_uri=" + encodeURIComponent("https://ohbot.3v.fi/panel/") + "&scope=&state=" + encodeURIComponent(path);
             }
         }
+        else {
+            var username = localStorage.getItem('username');
+        }
         
-        if (apiToken) {
-            startApp(apiToken);
+        if (username && apiToken) {
+            startApp(username, apiToken);
         }
         else {
             apiRequest('token', null, function () {
@@ -42,7 +45,7 @@
                 }
 
                 if (json.status === 200) {
-                    startApp(json.token);
+                    startApp(json.auth.username, json.auth.token);
                 }
                 else {
                     console.error("Token status " + json.status);
@@ -51,9 +54,19 @@
         }
     }
     
-    function startApp(apiToken) {
+    function addToNav(href, text) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = href;
+        a.textContent = text;
+        li.appendChild(a);
+        document.getElementById('nav').appendChild(li);
+    }
+    
+    function startApp(username, apiToken) {
         authHeader = apiToken;
         if (hasStorageSupport) {
+            localStorage.setItem('username', username);
             localStorage.setItem('apitoken', apiToken);
         }
         apiRequest('me', null, function () {
@@ -83,14 +96,18 @@
         xhr.addEventListener('load', callback);
         if (typeof error === "function") xhr.addEventListener('error', error);
 
-        if (data) {
+        if (data && data.data) {
             xhr.open("POST", url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.setRequestHeader('Authorization', authHeader);
-            xhr.send(JSON.stringify(data));
+            xhr.send(JSON.stringify(data.data));
         }
         else {
-            xhr.open("GET", url, true);
+            var verb = "GET";
+            if (data && data.verb) {
+                verb = data.verb
+            }
+            xhr.open(verb, url, true);
             xhr.setRequestHeader('Authorization', authHeader);
             xhr.send();
         }
