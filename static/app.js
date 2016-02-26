@@ -2,7 +2,7 @@
     var path = window.location.hash.length > 0 && window.location.hash[0] === '#' ? window.location.hash.substring(1) : window.location.hash;
     var hasStorageSupport = false;
     var authHeader = "";
-    
+
     window.onload = function () {
         // Check localStorage support
         try {
@@ -34,11 +34,11 @@
         else {
             var username = localStorage.getItem('username');
         }
-        
+
         if (username && apiToken) {
             authHeader = apiToken;
         }
-        
+
         apiRequest('token', null, function () {
             try {
                 var json = JSON.parse(this.responseText);
@@ -63,7 +63,7 @@
             }
         });
     }
-    
+
     function addToNav(href, text) {
         var li = document.createElement('li');
         var a = document.createElement('a');
@@ -72,7 +72,7 @@
         li.appendChild(a);
         document.getElementById('nav').appendChild(li);
     }
-    
+
     function startApp(username, apiToken) {
         authHeader = apiToken;
         if (hasStorageSupport) {
@@ -95,9 +95,41 @@
             }
         });
     }
-    
+
     function initializeChannel(channelData) {
         console.log(channelData);
+        var div = document.getElementById('channel-data');
+        var sect = document.createElement('div');
+        sect.classList.add('channel-data-part');
+        div.appendChild(sect);
+        if (channelData.joined) {
+            var ul = document.createElement('ul');
+            sect.appendChild(ul);
+            for (var key in channelData) {
+                if (channelData.hasOwnProperty(key)) {
+                    switch (typeof channelData[key]) {
+                        case "number":
+                            channelData[key] = channelData[key].toString();
+                        case "string":
+                            ul.appendChild(createKeyValListEntry(key, channelData[key]));
+                            break;
+                    }
+                }
+            }
+        }
+        else {
+            sect.textContent = "ohbot is currently not in ";
+        }
+    }
+    
+    function createKeyValListEntry(key, val) {
+        var li = document.createElement('li');
+        var str = document.createElement('strong');
+        li.appendChild(str);
+        str.textContent = key.replace('_', ' ');
+        str.classList.add("title");
+        li.appendChild(document.createTextNode(val));
+        return li;
     }
 
     function apiRequest(endpoint, data, callback, error) {
