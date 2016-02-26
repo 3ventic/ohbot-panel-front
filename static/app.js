@@ -51,8 +51,15 @@
             if (json.status === 200) {
                 startApp(json.auth.username, json.auth.token);
             }
+            else if (json.status === 205) {
+                if (hasStorageSupport) {
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('apitoken');
+                    window.location.reload();
+                }
+            }
             else {
-                console.error("Token status " + json.status);
+                console.error("Token status " + this.responseText);
             }
         });
     }
